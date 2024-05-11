@@ -9,7 +9,7 @@ class Plot():
         self.grid = grid
         self.ws = simulation_result
         self.name = name_data
-        self.spins = ['Spin +1', 'Spin -1', 'Spin 0']
+        self.spins = ['Spin x proj.', 'Spin y proj.', 'Spin z proj.']
         self.colors = ['r', 'g', 'b']
         self.colormaps = ['Reds', 'Greens', 'Blues']
         self.t = t
@@ -67,8 +67,8 @@ class Plot():
         if mode == 'rho':
             return f'where $\\theta$ = {p1} and $\\phi$ = {p2}'
         if mode == 'theta':
-            return f'where $\\rho$ = {p1} and $\\phi$ = {p2}'
-        return f'where $\\rho$ = {p1} and $\\theta$ = {p2}'
+            return f'where $\\rho$ = {-self.grid[0]//2+p1} and $\\phi$ = {p2}'
+        return f'where $\\rho$ = {-self.grid[0]//2+p1} and $\\theta$ = {p2}'
 
     def set_labels_2d(self, mode):
         if mode == 'rho':
@@ -166,7 +166,7 @@ class Plot():
             ax.plot(timepoints, point_dinam[:, i], label=self.spins[i], color=self.colors[i])
         plt.xlabel('Time, s')
         plt.ylabel(self.name)
-        plt.title(self.name + f' dinamics at point $\\rho$ = {rho}, $\\theta$ = {theta}, $\\phi$ = {phi}')
+        plt.title(self.name + f' dinamics at point $\\rho$ = {-self.grid[0]//2+rho}, $\\theta$ = {theta}, $\\phi$ = {phi}')
         plt.legend()
         plt.show()
 

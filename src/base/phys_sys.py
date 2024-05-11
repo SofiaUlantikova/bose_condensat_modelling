@@ -232,16 +232,23 @@ class Simulation():
             dt_eval = dt
         steps = ceil(t / dt)
         eval_steps = ceil(t / dt_eval)
-        counter = 0
-        timepoints = np.linspace(0, t, steps + 1)
+        counter = -1
+        if len(self.t_evals) > 0:
+            t_start = self.t_evals[-1][-1] + dt
+        else:
+            t_start = dt
+        t_end = t_start + t
+        timepoints = np.linspace(t_start, t_end, steps)
         solution = np.empty([eval_steps] + list(self.prop.psishape), dtype=np.complex64)
-        solution[counter] = self.prop.psi
         for i in range(steps):
-            self.prop(timepoints[i + 1], dt)
-            if timepoints[i] / dt_eval >= counter:
-                counter += 1
-                solution[counter] = self.prop.psi
-        eval_points = np.linspace(0, t, eval_steps)
+            self.prop(timepoints[i], dt)
+            if (timepoints[i]-t_start) / dt_eval >= counter:
+                if counter == eval_steps-1:
+                    warnings.warn('Simulation steps touches time boarder. May result in artifacts on boundary timepoints', UserWarning)
+                else:
+                    counter += 1
+                    solution[counter] = self.prop.psi
+        eval_points = np.linspace(t_start, t_end, eval_steps)
         self.t_evals.append(eval_points)
         self.solutions.append(solution)
 
